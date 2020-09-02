@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -20,10 +21,28 @@ func main() {
 	bot.Debug = true
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	updateConfig := tgbotapi.NewUpdate(0)
-	updateConfig.Timeout = 30
+	webhookURL := os.Getenv("WEBHOOK_URL")
+	webhook := tgbotapi.NewWebhook(webhookURL + bot.Token)
 
-	for update := range bot.GetUpdatesChan(updateConfig) {
+	_, err = bot.Request(webhook)
+	if err != nil {
+		panic(err)
+	}
+
+	info, err := bot.GetWebhookInfo()
+
+	if err != nil {
+		panic(err)
+	}
+
+	if info.LastErrorDate != 0 {
+		log.Printf("failed to set webhook: %s", info.LastErrorMessage)
+	}
+
+	updates := bot.ListenForWebhook("/" + bot.Token)
+	go http.ListenAndServe("0.0.0.0:8443", nil)
+
+	for update := range updates {
 		log.Printf("Found update: %v", update)
 		if update.Message == nil {
 			continue
