@@ -22,7 +22,7 @@ type Poll struct {
 }
 
 func (p *Poll) String() string {
-	res := fmt.Sprintf("%s\n", p.Name)
+	res := fmt.Sprintf("%s\n\n", p.Name)
 	for _, option := range p.OptionsOrder {
 		us := make([]string, 0)
 		for _, u := range p.Users {
@@ -76,11 +76,19 @@ var (
 			},
 		},
 	}
+	vika = UserOptions{
+		"@viskonsin",
+		grammar.Context{
+			Variables: map[int]bool{
+				6: true,
+			},
+		},
+	}
 	// Sample poll to test interface
 	Sample = Poll{
 		"DAF Pub",
 		[]int{1, 2, 3, 4, 5, 6},
-		[]UserOptions{daniel, denys, belkka},
+		[]UserOptions{daniel, denys, belkka, vika},
 		map[int]string{
 			1: "tue 20:00",
 			2: "tue 21:00",
