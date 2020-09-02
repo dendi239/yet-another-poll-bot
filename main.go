@@ -40,7 +40,7 @@ func main() {
 	}
 
 	updates := bot.ListenForWebhook("/" + bot.Token)
-	go http.ListenAndServe("0.0.0.0:8443", nil)
+	go http.ListenAndServe("/"+bot.Token, nil)
 
 	for update := range updates {
 		log.Printf("Found update: %v", update)
