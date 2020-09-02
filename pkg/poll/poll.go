@@ -1,6 +1,11 @@
 package poll
 
-import "github.com/dendi239/yet-another-poll-bot/pkg/grammar"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/dendi239/yet-another-poll-bot/pkg/grammar"
+)
 
 // UserOptions represents all data specific to user
 type UserOptions struct {
@@ -14,6 +19,21 @@ type Poll struct {
 	OptionsOrder []int
 	Users        []UserOptions
 	Options      map[int]string
+}
+
+func (p *Poll) String() string {
+	res := fmt.Sprintf("%s\n", p.Name)
+	for _, option := range p.OptionsOrder {
+		us := make([]string, 0)
+		for _, u := range p.Users {
+			if contains, err := u.context.Variables[option]; err == nil && contains {
+				us = append(us, u.username)
+			}
+		}
+		line := p.Options[option] + ": " + strings.Join(us, ", ") + "\n"
+		res += line
+	}
+	return res
 }
 
 var (
