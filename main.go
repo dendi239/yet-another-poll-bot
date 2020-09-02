@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/dendi239/yet-another-poll-bot/pkg/grammar"
+	"github.com/dendi239/yet-another-poll-bot/pkg/poll"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -48,7 +49,7 @@ func main() {
 			continue
 		}
 
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Default text")
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Unknown command")
 		words := strings.Fields(update.Message.Text)
 
 		func() {
@@ -97,6 +98,9 @@ func main() {
 					}
 
 					msg.Text = fmt.Sprintf("parsed: %v", term)
+
+				case "/sample_poll":
+					msg.Text = fmt.Sprintf("%v", poll.Sample)
 
 				default:
 					return
