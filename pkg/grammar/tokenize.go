@@ -8,9 +8,10 @@ import (
 )
 
 const (
-	idToken    = "idToken"
-	signToken  = "signToken"
-	braceToken = "braceToken"
+	idToken     = "idToken"
+	signToken   = "signToken"
+	braceToken  = "braceToken"
+	negateToken = "negateToken"
 )
 
 // Token is stucture that represents one of: brace, identificator, operator-sign
@@ -49,6 +50,9 @@ func Tokenize(s string) (tokens []Token, err error) {
 			}
 
 			tokens = append(tokens, Token{braceToken, braceType})
+
+		case c == '!':
+			tokens = append(tokens, Token{negateToken, 0})
 
 		default:
 			err = fmt.Errorf("parse error: unknown token %c", c)

@@ -2,7 +2,6 @@ package grammar
 
 import (
 	"errors"
-	"fmt"
 )
 
 // Context stores all necessary info from poll.
@@ -15,44 +14,6 @@ type Context struct {
 type Term interface {
 	String() string
 	Eval(context *Context) bool
-}
-
-type and struct {
-	lhs Term
-	rhs Term
-}
-
-func (a *and) Eval(context *Context) bool {
-	return a.lhs.Eval(context) && a.rhs.Eval(context)
-}
-
-func (a *and) String() string {
-	return fmt.Sprintf("(%s & %s)", a.lhs, a.rhs)
-}
-
-type or struct {
-	lhs Term
-	rhs Term
-}
-
-func (o *or) Eval(context *Context) bool {
-	return o.lhs.Eval(context) || o.rhs.Eval(context)
-}
-
-func (o *or) String() string {
-	return fmt.Sprintf("(%s | %s)", o.lhs, o.rhs)
-}
-
-type constant struct {
-	id int
-}
-
-func (c *constant) Eval(context *Context) bool {
-	return context.Variables[c.id]
-}
-
-func (c *constant) String() string {
-	return fmt.Sprintf("%d", c.id)
 }
 
 var errNotImplemented = errors.New("not implemented yet")
@@ -87,6 +48,17 @@ func parseTerm(tokens []Token) (Term, []Token, error) {
 
 	case signToken:
 		return nil, nil, errWrongType
+
+	case negateToken:
+		term, rest, err := parseTerm(tokens[1:])
+		if err != nil {
+			return nil, nil, err
+		}
+		if term == nil {
+			return nil, nil, errors.New("negate to empty term")
+		}
+
+		return &negate{term}, rest, err
 
 	default:
 		return nil, nil, errNotReachable
