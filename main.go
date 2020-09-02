@@ -100,7 +100,7 @@ func main() {
 					msg.Text = fmt.Sprintf("parsed: %v", term)
 
 				case "/sample_poll":
-					msg.Text = fmt.Sprintf("%v", poll.Sample)
+					msg.Text = fmt.Sprintf("%v", &poll.Sample)
 
 				default:
 					return
