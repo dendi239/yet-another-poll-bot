@@ -26,7 +26,7 @@ func (p *Poll) String() string {
 	for _, option := range p.OptionsOrder {
 		us := make([]string, 0)
 		for _, u := range p.Users {
-			if contains, err := u.context.Variables[option]; err == nil && contains {
+			if contains, err := u.context.Variables[option]; err && contains {
 				us = append(us, u.username)
 			}
 		}
